@@ -61,11 +61,12 @@ class _HttpApp extends State<HttpApp> {
   Widget build(BuildContext context){
     return Scaffold(
       appBar: AppBar(
+        leading: Icon(Icons.search),
         title: TextField(
           controller: _editingController,
           style: TextStyle(color: Colors.white),
           keyboardType: TextInputType.text,
-          decoration: InputDecoration(hintText: "검색어를 입력하세요"),
+          decoration: InputDecoration(hintText: "검색어를  입력하세요"),
         )
       ),
       body: Container(
