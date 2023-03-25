@@ -17,7 +17,8 @@ class _ImageWidgetApp extends State<ImageWidgetApp> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Image.asset('image/flutter.png'),
+              Image.asset('image/flutter.png', width: 200, height: 150,fit: BoxFit.cover,),
+              Text('Flutter Image Widget & Font', style: TextStyle(fontFamily: 'Pacifico',fontSize: 30,color: Colors.blue),)
             ],
           ),
         ),
