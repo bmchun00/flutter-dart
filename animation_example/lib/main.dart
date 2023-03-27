@@ -1,5 +1,7 @@
+import 'package:animation_example/secondPage.dart';
 import 'package:flutter/material.dart';
 import 'people.dart';
+import 'intro.dart';
 
 Map<int, Color> color =
 {
@@ -41,7 +43,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Crimson,
       ),
-      home: AnimationApp()
+      home: IntroPage(),
     );
   }
 }
@@ -93,6 +95,7 @@ class _AnimationApp extends State<StatefulWidget>{
       body: Container(
         child: Center(
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               SizedBox(
                 child: AnimatedOpacity(
@@ -141,25 +144,48 @@ class _AnimationApp extends State<StatefulWidget>{
                 ),
                 height: 200
               ),
+              SizedBox(
+                height: 10,
+              ),
               ElevatedButton(onPressed: (){
                 setState(() {
                   _changeWeightColor(peoples[current].weight);
                   if(current<peoples.length - 1) current++;
                 });
               }, child: Text("NEXT")),
+              SizedBox(
+                height: 10,
+              ),
               ElevatedButton(onPressed: (){
                 setState(() {
                   _changeWeightColor(peoples[current].weight);
                   if(current>0) current--;
                 });
               }, child: Text("PREVIOUS")),
+              SizedBox(
+                height: 10,
+              ),
               ElevatedButton(onPressed: (){
                 setState(() {
                   _opacity = _opacity==1?0:1;
                 });
               }, child: Text("OPACITY 0")),
+              SizedBox(
+                height: 10,
+              ),
+              ElevatedButton(onPressed: (){
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) => SecondPage()));
+              }, child: SizedBox(
+                width: 200,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Hero(tag: 'detail', child: Icon(Icons.cake)),
+                    Text("MOVE NEXT PAGE"),
+                  ],
+                ),
+              )),
             ],
-            mainAxisAlignment: MainAxisAlignment.center,
           ),
         ),
       ),
