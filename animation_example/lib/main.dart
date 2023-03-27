@@ -2,6 +2,7 @@ import 'package:animation_example/secondPage.dart';
 import 'package:flutter/material.dart';
 import 'people.dart';
 import 'intro.dart';
+import 'sliverPage.dart';
 
 Map<int, Color> color =
 {
@@ -181,10 +182,16 @@ class _AnimationApp extends State<StatefulWidget>{
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Hero(tag: 'detail', child: Icon(Icons.cake)),
-                    Text("MOVE NEXT PAGE"),
+                    Text(" MOVE NEXT PAGE"),
                   ],
                 ),
               )),
+              SizedBox(
+                height: 10,
+              ),
+              ElevatedButton(onPressed: (){
+                Navigator.of(context).push(MaterialPageRoute(builder: (context)=> SliverPage()));
+              }, child: Text("MOVE SLIVER PAGE")),
             ],
           ),
         ),
