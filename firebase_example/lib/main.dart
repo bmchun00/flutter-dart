@@ -1,12 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_analytics/observer.dart';
 
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
-void main() {
   runApp(const MyApp());
 }
 
+Map<int, Color> color =
+{
+  50:Color.fromRGBO(134,38,51, .1),
+  100:Color.fromRGBO(134,38,51, .2),
+  200:Color.fromRGBO(134,38,51, .3),
+  300:Color.fromRGBO(134,38,51, .4),
+  400:Color.fromRGBO(134,38,51, .5),
+  500:Color.fromRGBO(134,38,51, .6),
+  600:Color.fromRGBO(134,38,51, .7),
+  700:Color.fromRGBO(134,38,51, .8),
+  800:Color.fromRGBO(134,38,51, .9),
+  900:Color.fromRGBO(134,38,51, 1),
+};
+
+MaterialColor Crimson = MaterialColor(0xFF862633, color);
+
 class MyApp extends StatelessWidget {
+  static FirebaseAnalytics analytics = FirebaseAnalytics.instance;
+  static FirebaseAnalyticsObserver observer = FirebaseAnalyticsObserver(analytics: analytics);
+
   const MyApp({super.key});
 
   // This widget is the root of your application.
@@ -24,11 +50,66 @@ class MyApp extends StatelessWidget {
         // or simply save your changes to "hot reload" in a Flutter IDE).
         // Notice that the counter didn't reset back to zero; the application
         // is not restarted
-        primarySwatch: Colors.blue,
+        primarySwatch: Crimson,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      navigatorObservers: <NavigatorObserver>[observer,],
+      home: FirebaseApp(
+        analytics: analytics,
+        observer: observer,
+      ),
     );
   }
+}
+
+class FirebaseApp extends StatefulWidget{
+  FirebaseApp({Key? key, required this.analytics, required this.observer}) : super(key: key);
+  final FirebaseAnalytics analytics;
+  final FirebaseAnalyticsObserver observer;
+
+  @override
+  _FirebaseAppState createState() => _FirebaseAppState(analytics, observer);
+}
+
+class _FirebaseAppState extends State<FirebaseApp> {
+  _FirebaseAppState(this.analytics, this.observer);
+  final FirebaseAnalytics analytics;
+  final FirebaseAnalyticsObserver observer;
+  String _message = '';
+
+  void setMessage(String message){
+    setState(() {
+      _message = message;
+    });
+  }
+
+  Future<void> _sendAnalyticsEvent() async{
+    await analytics.logEvent(name: 'test_event',
+    parameters: <String, dynamic> {
+      'string': 'hello flutter',
+      'int':100,
+    },);
+    setMessage('Analytics Done');
+  }
+
+  @override
+  Widget build(BuildContext context){
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Firebase Example'),
+      ),
+      body: Center(
+        child: Column(
+          children: <Widget>[
+            ElevatedButton(onPressed: _sendAnalyticsEvent, child: Text('Test')),
+            Text(_message, style: TextStyle(color: Crimson),)
+          ],
+          mainAxisAlignment: MainAxisAlignment.center,
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(child: const Icon(Icons.tab), onPressed: (){},),
+    );
+  }
+
 }
 
 class MyHomePage extends StatefulWidget {
