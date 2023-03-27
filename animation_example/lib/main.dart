@@ -57,6 +57,8 @@ class AnimationApp extends StatefulWidget{
 class _AnimationApp extends State<StatefulWidget>{
   List<People> peoples = new List.empty(growable: true);
   int current = 0;
+  Color weightColor = Colors.blue;
+  double _opacity = 1;
 
   @override
   void initState(){
@@ -70,6 +72,18 @@ class _AnimationApp extends State<StatefulWidget>{
     peoples.add(People('콘', 80, 12));
   }
 
+  void _changeWeightColor(double weight){
+    if(weight < 40){
+      weightColor = Colors.blueAccent;
+    }else if(weight < 60){
+      weightColor = Colors.indigo;
+    }else if(weight < 80){
+      weightColor = Colors.orange;
+    }else{
+      weightColor = Colors.red;
+    }
+  }
+
   @override
   Widget build(BuildContext context){
     return Scaffold(
@@ -81,58 +95,69 @@ class _AnimationApp extends State<StatefulWidget>{
           child: Column(
             children: <Widget>[
               SizedBox(
-                child: Row(
-                  children: <Widget>[
-                    SizedBox(width: 100,child: Text("이름 : ${peoples[current].name}"),),
-                    AnimatedContainer(
-                      duration: Duration(seconds:2),
-                      curve: Curves.linear,
-                      color: Colors.amber,
-                      child: Text(
-                        '키 ${peoples[current].height}',
-                        textAlign: TextAlign.center,
+                child: AnimatedOpacity(
+                  opacity: _opacity,
+                  duration: Duration(seconds: 1),
+                  child: Row(
+                    children: <Widget>[
+                      SizedBox(width: 100,child: Text("이름 : ${peoples[current].name}"),),
+                      AnimatedContainer(
+                        duration: Duration(seconds:2),
+                        curve: Curves.linear,
+                        color: Colors.amber,
+                        child: Text(
+                          '키 ${peoples[current].height}',
+                          textAlign: TextAlign.center,
+                        ),
+                        width: 50,
+                        height: peoples[current].height,
                       ),
-                      width: 50,
-                      height: peoples[current].height,
-                    ),
-                    AnimatedContainer(
-                      duration: Duration(seconds:2),
-                      curve: Curves.easeInCubic,
-                      color: Colors.blue,
-                      child: Text(
-                        '몸무게 ${peoples[current].weight}',
-                        textAlign: TextAlign.center,
+                      AnimatedContainer(
+                        duration: Duration(seconds:2),
+                        curve: Curves.easeInCubic,
+                        color: weightColor,
+                        child: Text(
+                          '몸무게 ${peoples[current].weight}',
+                          textAlign: TextAlign.center,
+                        ),
+                        width: 50,
+                        height: peoples[current].weight,
                       ),
-                      width: 50,
-                      height: peoples[current].weight,
-                    ),
-                    AnimatedContainer(
+                      AnimatedContainer(
                         duration: Duration(seconds: 2),
-                      curve: Curves.linear,
-                      color: Colors.pinkAccent,
-                      child: Text(
-                        'bmi ${peoples[current].bmi.toString().substring(0,2)}',
-                        textAlign: TextAlign.center,
-                      ),
-                      width: 50,
-                      height: peoples[current].bmi,
-                    )
-                  ],
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  crossAxisAlignment: CrossAxisAlignment.end,
+                        curve: Curves.linear,
+                        color: Colors.pinkAccent,
+                        child: Text(
+                          'bmi ${peoples[current].bmi.toString().substring(0,2)}',
+                          textAlign: TextAlign.center,
+                        ),
+                        width: 50,
+                        height: peoples[current].bmi,
+                      )
+                    ],
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                  ),
                 ),
-                height: 200,
+                height: 200
               ),
               ElevatedButton(onPressed: (){
                 setState(() {
+                  _changeWeightColor(peoples[current].weight);
                   if(current<peoples.length - 1) current++;
                 });
               }, child: Text("NEXT")),
               ElevatedButton(onPressed: (){
                 setState(() {
+                  _changeWeightColor(peoples[current].weight);
                   if(current>0) current--;
                 });
               }, child: Text("PREVIOUS")),
+              ElevatedButton(onPressed: (){
+                setState(() {
+                  _opacity = _opacity==1?0:1;
+                });
+              }, child: Text("OPACITY 0")),
             ],
             mainAxisAlignment: MainAxisAlignment.center,
           ),
