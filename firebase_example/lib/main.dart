@@ -4,6 +4,8 @@ import 'firebase_options.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'memoPage.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -42,21 +44,50 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Simple Memo',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted
         primarySwatch: Crimson,
       ),
-      navigatorObservers: <NavigatorObserver>[observer,],
-      home: MemoPage(),
+      home: FutureBuilder(
+        future: Firebase.initializeApp(),
+        builder: (context, snapshot) {
+          if(snapshot.hasError) {
+            return Center(
+              child: Text('Error'),
+            );
+          }
+          if (snapshot.connectionState == ConnectionState.done){
+            _initFirebaseMessaging(context);
+            _getToken();
+            return MemoPage();
+          }
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        },
+      ),
     );
   }
+}
+
+_getToken() async{
+  FirebaseMessaging messaging = FirebaseMessaging.instance;
+  print("messaging.getToken() , ${await messaging.getToken()}");
+}
+
+_initFirebaseMessaging(BuildContext context){
+  FirebaseMessaging.onMessage.listen((event) {
+    print(event.notification!.title);
+    print(event.notification!.body);
+    showDialog(context: context, builder: (BuildContext context){
+      return AlertDialog(
+        title: Text("Alert"),
+        content: Text(event.notification!.body!),
+        actions: [
+          TextButton(onPressed: (){ Navigator.of(context).pop(); }, child: Text("OK"))
+        ],
+      );
+    });
+  });
+  FirebaseMessaging.onMessageOpenedApp.listen((event) { });
 }
 
 class FirebaseApp extends StatefulWidget{
