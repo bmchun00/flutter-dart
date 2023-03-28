@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
+import 'memoPage.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -39,7 +40,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Simple Memo',
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -53,10 +54,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Crimson,
       ),
       navigatorObservers: <NavigatorObserver>[observer,],
-      home: FirebaseApp(
-        analytics: analytics,
-        observer: observer,
-      ),
+      home: MemoPage(),
     );
   }
 }
